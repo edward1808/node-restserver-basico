@@ -12,7 +12,7 @@ let verificaToken = (req, res, next) => {
             return res.status(401).json({
                 ok: false,
                 err: {
-                    message: 'Unvalid authorization'
+                    message: 'Invalid authorization'
                 }
             });
         }
@@ -40,7 +40,30 @@ let verificaAdminRole = (req, res, next) => {
     }
 };
 
+/*
+ * Verifica Token Img 
+ */
+
+let verificaTokenImg = (req, res, next) => {
+
+    let token = req.query.token;
+
+    jwt.verify(token, process.env.SEED, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err: {
+                    message: 'Invalid authorization'
+                }
+            });
+        }
+        req.usuario = decoded.usuario;
+        next();
+    });
+}
+
 module.exports = {
     verificaToken,
-    verificaAdminRole
+    verificaAdminRole,
+    verificaTokenImg
 }
